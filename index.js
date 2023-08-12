@@ -52,7 +52,6 @@ async function run() {
 
     app.post("/users", async(req, res) => {
       const data = req.body;
-      console.log(data);
       const result = await usersCollection.insertOne(data);
       res.send(result)
     })
@@ -80,10 +79,19 @@ async function run() {
       res.send(result)
     })
 
+
+    
+    app.delete('/deleteProduct', async(req, res) => {
+      const id = req.query.id;
+      console.log(id);
+      const query = { _id: new ObjectId(id)};
+      const result = await productsCollection.deleteOne(query);
+      res.send(result)
+    })
+
     app.get('/userRole', async(req, res) => {
       const email = req.query.email;
       const query = {email: email};
-      console.log(email);
       const result = await usersCollection.findOne(query);
       res.send(result?.role)
     })
@@ -93,9 +101,14 @@ async function run() {
       res.send(result)
     })
 
-    app.patch('changeUserRole/:email', async(req, res) => {
+    app.get('/allProducts', async(req, res) => {
+      const result = await productsCollection.find().toArray();
+      res.send(result)
+    })
+
+    app.patch('/changeUserRole/:email', async(req, res) => {
       const email = req.params.email;
-      const role = req.body;
+      const {role} = req.body;
       const filter = {email: email}
       const updateDoc = {
         $set: {
