@@ -26,6 +26,7 @@ async function run() {
     const productsCollection = client.db("E-Commerce").collection("products");
     const usersCollection = client.db("E-Commerce").collection("users");
     const cartsCollection = client.db("E-Commerce").collection("carts");
+    const ordersCollection = client.db("E-Commerce").collection("orders");
 
     app.get('/products/details', async(req, res) => {
       const id = req.query.id;
@@ -71,6 +72,14 @@ async function run() {
     })
 
 
+    app.post('/orders', async(req, res) => {
+      const data = req.body;
+      const options = { ordered: true };
+      const result = await ordersCollection.insertMany(data, options);
+      res.send(result)
+    })
+
+
     app.delete('/deleteCart', async(req, res) => {
       const id = req.query.id;
       console.log(id);
@@ -80,7 +89,14 @@ async function run() {
     })
 
 
-    
+
+    app.delete('/deletefullCart/:email', async(req, res) => {
+      const email = req.params.email;
+      const query = {addedBy: email};
+      const result = await cartsCollection.deleteMany(query);
+      res.send(result)
+    })
+
     app.delete('/deleteProduct', async(req, res) => {
       const id = req.query.id;
       console.log(id);
