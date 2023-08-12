@@ -88,6 +88,24 @@ async function run() {
       res.send(result?.role)
     })
 
+    app.get('/users', async(req, res) => {
+      const result = await usersCollection.find().toArray();
+      res.send(result)
+    })
+
+    app.patch('changeUserRole/:email', async(req, res) => {
+      const email = req.params.email;
+      const role = req.body;
+      const filter = {email: email}
+      const updateDoc = {
+        $set: {
+          role: role
+        }
+      };
+      const result = await usersCollection.updateOne(filter, updateDoc);
+      res.send(result)
+    })
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
