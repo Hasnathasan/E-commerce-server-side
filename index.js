@@ -44,6 +44,14 @@ async function run() {
     })
 
 
+    app.post('/products', async(req, res) => {
+      const data = req.body;
+      console.log(data);
+      const result = await productsCollection.insertOne(data);
+      res.send(result)
+    })
+
+
     app.get("/eachUsers", async(req, res) => {
       const email = req.query.email;
       const query = {email: email}
@@ -72,12 +80,21 @@ async function run() {
     })
 
 
+
+    app.get('/orders', async(req, res) => {
+      const result = await ordersCollection.find().toArray();
+      res.send(result)
+    })
+
+
     app.post('/orders', async(req, res) => {
       const data = req.body;
       const options = { ordered: true };
       const result = await ordersCollection.insertMany(data, options);
       res.send(result)
     })
+
+
 
 
     app.delete('/deleteCart', async(req, res) => {
